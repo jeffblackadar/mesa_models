@@ -2,18 +2,29 @@ from mesa.visualization.modules import CanvasGrid, ChartModule, PieChartModule
 from mesa.visualization.ModularVisualization import ModularServer
 from mesa.visualization.UserParam import UserSettableParameter
 
-from .model import Pond
+from .model import PondMap
 
 COLORS = {"water": "#0000AA", "land": "#008800"}
 
-def pond_portrayal(pond_cell):
-    if pond_cell is None:
+def pond_portrayal(agent):
+    if agent is None:
         return
-    portrayal = {"Shape": "rect", "w": 1, "h": 1, "Filled": "true", "Layer": 0}
-    (x, y) = pond_cell.pos
-    portrayal["x"] = x
-    portrayal["y"] = y
-    portrayal["Color"] = COLORS[pond_cell.type]
+    if agent.type=="mapcell":
+        portrayal = {"Shape": "rect", "w": 1, "h": 1, "Filled": "true", "Layer": 0}
+        (x, y) = agent.pos
+        portrayal["x"] = x
+        portrayal["y"] = y
+        portrayal["Color"] = COLORS[agent.terrain]    
+
+    if agent.type=="port":
+        portrayal = {"Shape": "circle", "r": 2, "Filled": "true", "Layer": 1}
+        (x, y) = agent.pos
+        portrayal["x"] = x
+        portrayal["y"] = y
+        portrayal["Color"] = "#ffff00"
+
+
+
     return portrayal
 
 
@@ -24,5 +35,5 @@ model_params = {
     "width": 100
 }
 server = ModularServer(
-    Pond, [canvas_element], "Pond Trade Model", model_params
+    PondMap, [canvas_element], "Pond Trade Model", model_params
 )
